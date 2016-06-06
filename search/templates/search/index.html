@@ -1,0 +1,14 @@
+<ul><a href="mapping.html" target="_blank">Mapping</a></ul>
+<ul><a href="leagues.html" target="_blank">Leagues</a></ul>
+
+
+<form method="post">
+    <table>
+        {% csrf_token %}
+        {{ form.as_table }}
+        {% if form.errors %}
+            {% for error in form.errors %}<p>{{ error }}</p>{% endfor %}
+        {% endif %}
+    </table>
+    <button>Search</button>
+</form>

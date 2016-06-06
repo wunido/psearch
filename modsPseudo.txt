@@ -1,0 +1,16 @@
+modsPseudo.# of Elemental Resistances
+modsPseudo.# of Resistances
+modsPseudo.#% Total increased Armour
+modsPseudo.#% Total increased Energy Shield
+modsPseudo.#% Total increased Evasion Rating
+modsPseudo.+# Total to Attributes
+modsPseudo.+# Total to Dexterity
+modsPseudo.+# Total to Intelligence
+modsPseudo.+# Total to Strength
+modsPseudo.+# Total to maximum Life
+modsPseudo.+#% Total to Chaos Resistance
+modsPseudo.+#% Total to Cold Resistance
+modsPseudo.+#% Total to Elemental Resistances
+modsPseudo.+#% Total to Fire Resistance
+modsPseudo.+#% Total to Lightning Resistance
+modsPseudo.+#% Total to Resistances

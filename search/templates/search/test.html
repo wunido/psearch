@@ -1,0 +1,29 @@
+<ul>
+query:
+    {{ query }}
+</ul>
+zmienne:
+<ul>
+    {{ response }}
+    {{ response2 }}
+</ul>
+listy:
+<ul>
+{% for a in response %}
+    {{ a }} </br>
+{% endfor %}
+
+{% for a in response2 %}
+    {{ a }} </br>
+{% endfor %}
+</ul>
+dict:
+<ul>
+{% for a,b in response %}
+    {{ a }} {{ b }} </br>
+{% endfor %}
+
+{% for a,b in response2 %}
+    {{ a }} {{ b }} </br>
+{% endfor %}
+</ul>
