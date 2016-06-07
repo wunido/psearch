@@ -36,7 +36,7 @@ th_axe = {itemType: 'Axe', equipType: 'Two Handed Melee Weapon'}
 oh_mace = {itemType: 'Mace', equipType: 'One Handed Melee Weapon'}
 th_mace = {itemType: 'Mace', equipType: 'Two Handed Melee Weapon'}
 
-# creating dicts for forms
+# creating list of tuples for form
 item = (
         (None, 'None'),
         (body_armour, 'Body Armour'),
@@ -66,8 +66,8 @@ item = (
 )
 
 
-# import mapping
 def mapping_write(request):
+    """ Mapping export to file (request - mapping of mod group / saved file - 'mod group'.txt) """
     import urllib
     import os
 
@@ -82,8 +82,8 @@ def mapping_write(request):
         os.remove(request+'.txt')
 
 
-# export mappings as dict
 def mapping_tuple(request):
+    """ Converting mapping into tuple (request - mapping of mod group, not file!) """
     modListFull = [None, ]
     modListNames = [None, ]
     length = len(request)

@@ -15,6 +15,7 @@ es = Elasticsearch([{
 
 
 def mapping(request):
+    """ API MAPPING """
     r = urllib.request.urlopen('http://api.exiletools.com/endpoints/mapping')
     rawdata = r.read()
     enc = chardet.detect(rawdata)
@@ -24,7 +25,7 @@ def mapping(request):
 
 
 def leagues_test(request):
-    # getting active leagues
+    """ Active leagues + API connection test """
     r = urllib.request.urlopen('http://api.exiletools.com/ladder?activeleagues=1')
     # leagues saved in dictionary type
     leagues = json.loads(r.read().decode(r.info().get_param('charset') or 'utf-8'))
@@ -47,14 +48,12 @@ def leagues_test(request):
     else:
         exiletools = 'error connecting exiletools api'
     return render(request, 'search/leagues.html', {
-                    'leagues': sorted(leagues.values()),    # sort+returning list not dict
-                    'exiletools': exiletools
-                    }
-                  )
+                    'leagues': sorted(leagues.values()),    # sort+returning list
+                    'exiletools': exiletools})
 
 
 def index(request):
-    # checking form
+
     if request.method == 'POST':
         form = SearchForm(request.POST)
 
@@ -63,18 +62,18 @@ def index(request):
             response = es.search(index="index", body=search.query.query(request))
             # getting back data
             item_data = convert_resp(response)
-            exiletools = 'success %d total items' % response['hits']['total']
-            return render(request, 'search/search_results.html', {'item_data': item_data, 'exiletools': exiletools,})
+            hitsNumber = 'success %d total items' % response['hits']['total']
+            return render(request, 'search/search_results.html', {'item_data': item_data, 'hitsNumber': hitsNumber,})
         else:
-            return HttpResponse('wrong data')
+            return HttpResponse('Form Error')
     else:
         form = SearchForm()
     return render(request, 'search/index.html', {'form': form})
 
 
 def convert_resp(request):
-    # converting json input into dict with sorted data
-    item_data={}
+    """ converting json input into dict with chosen data """
+    item_data = {}
     for hit in request['hits']['hits']:
         item_id = hit["_source"]["uuid"]
         full_name = hit["_source"]["info"]["fullName"]
@@ -97,6 +96,7 @@ def convert_resp(request):
 
 
 def test(request):
+
     if request.method == 'POST':
         form = SearchForm(request.POST)
 
@@ -108,13 +108,3 @@ def test(request):
     else:
         form = SearchForm()
     return render(request, 'search/index.html', {'form': form})
-
-
-"""{
-                        "query": {
-                            "query_string": {
-                                "default_field": "info.fullName",
-                                "query": s_name
-                            }
-                        },
-                        """
