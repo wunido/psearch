@@ -8,7 +8,7 @@ class SearchForm(forms.Form):
     s_league = forms.ChoiceField(choices=search.data.leagues, label='League')
 
     # attributes.itemType / attributes.equipType
-    s_type = forms.ChoiceField(choices=search.data.item, label='Item Type', required=False)
+    s_type = forms.ChoiceField(choices=search.data.item_type(), label='Item Type', required=False)
 
     # info.fullName / info.name / info.tokenized.fullName
     s_name = forms.CharField(label='Name', required=False)
@@ -53,7 +53,7 @@ class SearchForm(forms.Form):
     s_linksMax = forms.IntegerField(label='Links Max', required=False)
     s_linksMin = forms.IntegerField(label='Min', required=False)
 
-    # mods from files ( modsPseudo.txt / )
+    # mods from files ( modsPseudo.txt / ... )
     s_mods = forms.ChoiceField(choices=search.data.mapping_tuple('modsPseudo'), label='Mods', required=False)
     s_modsMax = forms.IntegerField(label='Max', required=False)
     s_modsMin = forms.IntegerField(label='Min', required=False)

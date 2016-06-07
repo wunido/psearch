@@ -1,17 +1,12 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from elasticsearch import Elasticsearch
+from django.http import HttpResponse
 from django.shortcuts import render
 from .forms import SearchForm
 import urllib
 import json
 import chardet
 import search.query
-
-es = Elasticsearch([{
-    'host': 'api.exiletools.com',
-    'port': 80,
-    'http_auth': 'apikey:DEVELOPMENT-Indexer'
-}])
+import eslogin
+import search.data
 
 
 def mapping(request):
@@ -25,12 +20,12 @@ def mapping(request):
 
 
 def leagues_test(request):
-    """ Active leagues + API connection test """
+    """ Active leagues + API connection test / NEED TO REBUILD """
     r = urllib.request.urlopen('http://api.exiletools.com/ladder?activeleagues=1')
     # leagues saved in dictionary type
     leagues = json.loads(r.read().decode(r.info().get_param('charset') or 'utf-8'))
     # checking connection to api
-    response = es.search(
+    response = eslogin.es.search(
         search_type="count",
         index="index",
         body={
@@ -59,40 +54,16 @@ def index(request):
 
         if form.is_valid():
             # search
-            response = es.search(index="index", body=search.query.query(request))
+            response = eslogin.es.search(index="index", body=search.query.Query(request).query_finished())
             # getting back data
-            item_data = convert_resp(response)
-            hitsNumber = 'success %d total items' % response['hits']['total']
-            return render(request, 'search/search_results.html', {'item_data': item_data, 'hitsNumber': hitsNumber,})
+            item_data = search.data.convert_resp(response)
+            results_nr = 'success %d total items' % response['hits']['total']
+            return render(request, 'search/search_results.html', {'item_data': item_data, 'hitsNumber': results_nr, })
         else:
             return HttpResponse('Form Error')
     else:
         form = SearchForm()
     return render(request, 'search/index.html', {'form': form})
-
-
-def convert_resp(request):
-    """ converting json input into dict with chosen data """
-    item_data = {}
-    for hit in request['hits']['hits']:
-        item_id = hit["_source"]["uuid"]
-        full_name = hit["_source"]["info"]["fullName"]
-        seller_account = hit["_source"]["shop"]["sellerAccount"]
-        if 'chaosEquiv' in hit["_source"]["shop"].keys():
-            chaos_equiv = hit["_source"]["shop"]["chaosEquiv"]
-        else:
-            chaos_equiv = 'no price'
-        if 'modsTotal' in hit["_source"].keys():
-            mods_total = hit["_source"]["modsTotal"]
-        else:
-            mods_total = None
-
-        # adding results to item_data
-        item_data[item_id] = {'full_name': full_name,
-                              'chaos_equiv': chaos_equiv,
-                              'seller_account': seller_account,
-                              'mods_total': mods_total}
-    return item_data
 
 
 def test(request):
@@ -104,7 +75,7 @@ def test(request):
             s_type = request.POST.get('s_type')
             s_name = request.POST.get('s_name')
             return render(request, 'search/test.html', {'response': s_type, 'response2': s_name,
-                                                        'query': search.query.query(request)})
+                                                        'query': search.query.Query(request).query_finished()})
     else:
         form = SearchForm()
     return render(request, 'search/index.html', {'form': form})
